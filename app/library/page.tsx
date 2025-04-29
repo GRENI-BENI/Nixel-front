@@ -227,39 +227,56 @@ export default function LibraryPage() {
             Upload New Photo
           </Link>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {stats.photos.map((photo) => (
-            <div key={photo.id} className="relative group">
-              <Link
-                href={`/photos/${photo.id}`}
-                className="block relative aspect-square overflow-hidden rounded-lg"
-              >
-                <img
-                  src={IMAGES_BASE_URL + photo.url}
-                  alt={photo.title || 'User photo'}
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                  <div className="text-white text-lg">❤️ {photo.likesCount}</div>
+        {stats.photos.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {stats.photos.map((photo) => (
+              <div key={photo.id} className="relative group">
+                <Link
+                  href={`/photos/${photo.id}`}
+                  className="block relative aspect-square overflow-hidden rounded-lg"
+                >
+                  <img
+                    src={IMAGES_BASE_URL + photo.url}
+                    alt={photo.title || 'User photo'}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                    <div className="text-white text-lg">❤️ {photo.likesCount}</div>
+                  </div>
+                </Link>
+                <div className="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <button
+                    onClick={() => handleEditPhoto(photo)}
+                    className="p-2 bg-gray-800 rounded-full hover:bg-gray-700"
+                  >
+                    <PencilIcon className="w-4 h-4 text-white" />
+                  </button>
+                  <button
+                    onClick={() => handleDeletePhoto(photo.id)}
+                    className="p-2 bg-red-600 rounded-full hover:bg-red-700"
+                  >
+                    <TrashIcon className="w-4 h-4 text-white" />
+                  </button>
                 </div>
-              </Link>
-              <div className="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                <button
-                  onClick={() => handleEditPhoto(photo)}
-                  className="p-2 bg-gray-800 rounded-full hover:bg-gray-700"
-                >
-                  <PencilIcon className="w-4 h-4 text-white" />
-                </button>
-                <button
-                  onClick={() => handleDeletePhoto(photo.id)}
-                  className="p-2 bg-red-600 rounded-full hover:bg-red-700"
-                >
-                  <TrashIcon className="w-4 h-4 text-white" />
-                </button>
               </div>
+            ))}
+          </div>
+        ) : (
+          <div className="card p-12 text-center">
+            <div className="flex flex-col items-center justify-center gap-4">
+              <PhotoIcon className="w-16 h-16 text-gray-500" />
+              <h3 className="text-xl font-semibold text-gray-400">Nothing yet :(</h3>
+              <p className="text-gray-500 mb-4">You haven`t uploaded any photos yet.</p>
+              <Link
+                href="/upload"
+                className="btn-primary flex items-center gap-2"
+              >
+                <PlusIcon className="w-5 h-5" />
+                Upload Your First Photo
+              </Link>
             </div>
-          ))}
-        </div>
+          </div>
+        )}
       </div>
 
       {/* Edit Photo Modal */}
