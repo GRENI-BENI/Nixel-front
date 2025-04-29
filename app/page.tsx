@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { ExclamationCircleIcon, CameraIcon, UserGroupIcon, HeartIcon, TagIcon, GlobeAltIcon } from '@heroicons/react/24/outline';
 import { photoApi, type Photo } from '@/lib/api';
 
-const IMAGES_BASE_URL = process.env.NEXT_PUBLIC_IMAGES_BASE_URL;
+const IMAGES_BASE_URL = process.env.NEXT_PUBLIC_IMAGES_BASE_URL || 'https://pixel-photos-bucket.s3.eu-central-1.amazonaws.com';
 
 const features = [
   {

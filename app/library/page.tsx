@@ -53,8 +53,8 @@ export default function LibraryPage() {
         setUser(userDetails);
 
         const photos = userPhotos.content;
-        const totalLikes = photos.reduce((sum, photo) => sum + photo.likesCount, 0);
-        const mostLikedPhoto = photos.reduce((prev, current) => 
+        const totalLikes = photos.reduce((sum: number, photo: { likesCount: number; }) => sum + photo.likesCount, 0);
+        const mostLikedPhoto = photos.reduce((prev:any, current:any) => 
           (prev?.likesCount || 0) > current.likesCount ? prev : current
         , null);
 

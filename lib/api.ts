@@ -42,13 +42,10 @@ export interface Photo {
   url: string;
   tags: string[];
   userId: string;
-  user: {
-    id: string;
-    nickname: string;
-    profilePicture: string | null;
-  };
+  nickname: string;
+  userProfileImage: string | null;
   likes: number;
-  isLiked: boolean;
+  likedByCurrentUser: boolean;
   createdAt: string;
 }
 
