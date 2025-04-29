@@ -8,11 +8,11 @@ import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
 import { photoApi, commentApi, type Photo, type Comment } from '@/lib/api';
 import { use } from 'react';
 
-const IMAGES_BASE_URL = process.env.NEXT_PUBLIC_IMAGES_BASE_URL;
+const IMAGES_BASE_URL = process.env.NEXT_PUBLIC_IMAGES_BASE_URL || 'https://pixel-photos-bucket.s3.eu-central-1.amazonaws.com';
 
 export default function PhotoPage({ params }: { params: { id: string } }) {
   const router = useRouter();
-  const { id } = use(params);
+  const { id } = params;
   const [photo, setPhoto] = useState<Photo | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
   const [similarPhotos, setSimilarPhotos] = useState<Photo[]>([]);
@@ -35,7 +35,7 @@ export default function PhotoPage({ params }: { params: { id: string } }) {
       const [similarData] = await Promise.all([photoApi.getPhotosByTag({ page:0, size: 6, tags: photoData?.tags[0] })])
       setPhoto(photoData);
       setComments(commentsData.content);
-      setSimilarPhotos(similarData.content.filter(p => p.id !== id));
+      setSimilarPhotos(similarData.content.filter((p: Photo) => p.id !== id));
     } catch (error) {
       console.error('Error fetching photo data:', error);
     } finally {

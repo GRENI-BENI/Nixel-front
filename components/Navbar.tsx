@@ -16,7 +16,7 @@ export default function Navbar() {
     const checkAuth = async () => {
       const token = localStorage.getItem('token');
       const luser= localStorage.getItem('user');
-      if (!user) {
+      if (!luser) {
         if(token){
         try {
           const freshUserData = await authApi.getCurrentUser(token);
@@ -30,7 +30,7 @@ export default function Navbar() {
         }
         }
       } else {
-        setUser(luser);
+        setUser(JSON.parse(luser));
       }
       setIsLoading(false);
     };

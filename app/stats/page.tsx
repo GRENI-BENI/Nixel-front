@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { PhotoIcon, HeartIcon, ChatBubbleLeftIcon } from '@heroicons/react/24/outline';
-import { userApi, photoApi, type User, type UserPhoto } from '@/lib/api';
+import {userApi, photoApi, type User, type UserPhoto, Photo} from '@/lib/api';
 
 const IMAGES_BASE_URL = process.env.NEXT_PUBLIC_IMAGES_BASE_URL;
 
@@ -47,8 +47,8 @@ export default function StatsPage() {
 
         // Calculate statistics
         const photos = userPhotos.content;
-        const totalLikes = photos.reduce((sum, photo) => sum + photo.likesCount, 0);
-        const mostLikedPhoto = photos.reduce((prev, current) => 
+        const totalLikes = photos.reduce((sum:number, photo:Photo) => sum + photo.likesCount, 0);
+        const mostLikedPhoto = photos.reduce((prev:Photo, current:Photo) =>
           (prev?.likesCount || 0) > current.likesCount ? prev : current
         , null);
 
@@ -93,7 +93,7 @@ export default function StatsPage() {
             <PhotoIcon className="w-8 h-8 text-indigo-500" />
             <div>
               <h3 className="text-lg font-semibold text-gray-300">Total Photos</h3>
-              <p className="text-2xl font-bold">{user.photosCount}</p>
+              <p className="text-2xl font-bold">{stats.recentPhotos.length}</p>
             </div>
           </div>
         </div>

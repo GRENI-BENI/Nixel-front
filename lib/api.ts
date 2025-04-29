@@ -44,7 +44,8 @@ export interface Photo {
   userId: string;
   nickname: string;
   userProfileImage: string | null;
-  likes: number;
+  likesCount: number;
+  commentsCount: number;
   likedByCurrentUser: boolean;
   createdAt: string;
 }
@@ -54,11 +55,8 @@ export interface Comment {
   content: string;
   userId: string;
   photoId: string;
-  user: {
-    id: string;
-    nickname: string;
-    profilePicture: string | null;
-  };
+  nickname: string;
+  userProfileImage: string | null;
   createdAt: string;
 }
 
@@ -85,6 +83,27 @@ export const authApi = {
     }
 
     return response.json();
+  },
+
+    signup: async (data: { email: string; password: string; nickname: string }) => {
+    const response = await fetch(`${API_BASE_URL}/iam/auth/signup`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => null);
+      throw new Error(errorData?.message || 'Failed to create account');
+    }
+
+    // Login to get the access token
+    const authResponse = await authApi.login({
+      email: data.email,
+      password: data.password
+    });
+
+    return  authResponse.accessToken;
   },
 
   // GET /api/user/me

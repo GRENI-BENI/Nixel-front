@@ -9,7 +9,7 @@ import { userApi, photoApi, type User, type UserPhoto } from '@/lib/api';
 const IMAGES_BASE_URL = process.env.NEXT_PUBLIC_IMAGES_BASE_URL;
 
 export default function ProfilePage({ params }: { params: { id: string } }) {
-  const { id } = use(params);
+  const { id } = params;
   const [user, setUser] = useState<User | null>(null);
   const [photos, setPhotos] = useState<UserPhoto[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -202,7 +202,7 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
           
           <div className="flex justify-center md:justify-start gap-8 mb-6">
             <div>
-              <div className="text-2xl font-bold">{user.photosCount}</div>
+              <div className="text-2xl font-bold">{photos.length}</div>
               <div className="text-gray-400">Photos</div>
             </div>
             <div>

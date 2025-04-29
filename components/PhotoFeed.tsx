@@ -8,7 +8,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { photoApi, type Photo } from '@/lib/api';
 
-const IMAGES_BASE_URL = process.env.NEXT_PUBLIC_IMAGES_BASE_URL;
+import {IMAGES_BASE_URL } from '@/lib/env';
 
 export default function PhotoFeed() {
   const router = useRouter();
@@ -35,7 +35,7 @@ export default function PhotoFeed() {
       setPhotos(prev => {
         // Filter out any duplicates
         const uniquePhotos = newPhotos.filter(
-          newPhoto => !prev.some(p => p.id === newPhoto.id)
+            (newPhoto:Photo) => !prev.some(p => p.id === newPhoto.id)
         );
         return [...prev, ...uniquePhotos];
       });
@@ -104,7 +104,7 @@ export default function PhotoFeed() {
       const photo = photos.find(p => p.id === photoId);
       if (!photo) return;
 
-      if (photo.liked) {
+      if (photo.likedByCurrentUser) {
         await photoApi.unlikePhoto(photoId);
       } else {
         await photoApi.likePhoto(photoId);
@@ -114,8 +114,8 @@ export default function PhotoFeed() {
         photo.id === photoId
           ? { 
               ...photo, 
-              liked: !photo.liked,
-              likesCount: photo.liked ? photo.likesCount - 1 : photo.likesCount + 1 
+              liked: !photo.likedByCurrentUser,
+              likesCount: photo.likedByCurrentUser ? photo.likesCount - 1 : photo.likesCount + 1
             }
           : photo
       ));
@@ -188,9 +188,9 @@ export default function PhotoFeed() {
                       <span className="text-white">{photo.likesCount}</span>
                       <button
                         onClick={(e) => handleLike(photo.id, e)}
-                        className={`text-white transition-colors ${photo.liked ? 'text-pink-500' : 'hover:text-pink-500'}`}
+                        className={`text-white transition-colors ${photo.likedByCurrentUser ? 'text-pink-500' : 'hover:text-pink-500'}`}
                       >
-                        {photo.liked ? (
+                        {photo.likedByCurrentUser ? (
                           <HeartSolidIcon className="w-6 h-6" />
                         ) : (
                           <HeartIcon className="w-6 h-6" />
