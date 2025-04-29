@@ -8,7 +8,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { photoApi, type Photo } from '@/lib/api';
 
-import {IMAGES_BASE_URL } from '@/lib/env';
+const IMAGES_BASE_URL = process.env.NEXT_PUBLIC_IMAGES_BASE_URL || 'https://pixel-photos-bucket.s3.eu-central-1.amazonaws.com';
 
 export default function PhotoFeed() {
   const router = useRouter();
