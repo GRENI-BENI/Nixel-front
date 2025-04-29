@@ -242,7 +242,7 @@ export const photoApi = {
     formData.append('description', data.description);
     formData.append('tags', JSON.stringify(data.tags)); // Format tags as JSON string
 
-    const response = await fetch(`${API_BASE_URL}/photos`, {
+    const response = await fetch(`${API_BASE_URL}/photos/upload`, {
       method: 'POST',
       headers: {
         ...(localStorage.getItem('token') ? { Authorization: `Bearer ${localStorage.getItem('token')}` } : {})
