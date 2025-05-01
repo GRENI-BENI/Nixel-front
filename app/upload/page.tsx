@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { useDropzone } from 'react-dropzone';
 import { CloudArrowUpIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { photoApi } from '@/lib/api';
@@ -145,9 +146,11 @@ export default function UploadPage() {
           </div>
         ) : (
           <div className="relative">
-            <img
+            <Image
               src={photoPreview}
               alt="Upload preview"
+              width={800}
+              height={450}
               className="w-full aspect-video object-contain bg-gray-900 rounded-lg"
             />
             <button

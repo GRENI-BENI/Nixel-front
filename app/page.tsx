@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { ExclamationCircleIcon, CameraIcon, UserGroupIcon, HeartIcon, TagIcon, GlobeAltIcon } from '@heroicons/react/24/outline';
 import { photoApi, type Photo } from '@/lib/api';
 
@@ -69,7 +70,7 @@ export default function LandingPage() {
     try {
       setIsLoading(true);
       setError(null);
-    
+
       const photos = (await photoApi.getTrendingPhotos({ page: 0, size: 6 })).content;
       setFeaturedPhotos(photos);
     } catch (error) {
@@ -86,22 +87,25 @@ export default function LandingPage() {
       <div className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-indigo-900/50 to-background z-10" />
         <div className="absolute inset-0">
-          <img
+          <Image
             src="https://images.pexels.com/photos/1666021/pexels-photo-1666021.jpeg"
             alt="Photography background"
+            width={1920}
+            height={1080}
             className="w-full h-full object-cover"
+            priority
           />
         </div>
         <div className="relative z-20 container mx-auto px-4 py-24 text-center">
           <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-indigo-500 to-purple-600 text-transparent bg-clip-text">
             Showcase Your Photography to the World
           </h1>
-          
+
           <p className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto mb-12">
             Join our thriving community of photographers. Share your vision, get inspired,
             and connect with creators from around the globe.
           </p>
-          
+
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link href="/signup" className="btn-primary text-lg px-8 py-3">
               Get Started Free
@@ -122,7 +126,7 @@ export default function LandingPage() {
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-16">
             Everything You Need to Share Your Photography
           </h2>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {features.map((feature, index) => (
               <div key={index} className="card p-6 hover:bg-gray-700/50 transition-colors">
@@ -141,7 +145,7 @@ export default function LandingPage() {
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-16">
             Trending Photography
           </h2>
-          
+
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {isLoading ? (
               // Loading state
@@ -174,9 +178,11 @@ export default function LandingPage() {
                   className="relative group overflow-hidden rounded-lg"
                 >
                   <div className="aspect-[4/3]">
-                    <img
+                    <Image
                       src={IMAGES_BASE_URL+photo.url}
                       alt={`Photo by ${photo.nickname}`}
+                      width={600}
+                      height={450}
                       className="w-full h-full object-cover"
                     />
                   </div>
@@ -184,9 +190,11 @@ export default function LandingPage() {
                   <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-in-out">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-2">
-                        <img
+                        <Image
                           src={IMAGES_BASE_URL+photo.userProfileImage || '/default-avatar.png'}
                           alt={photo.nickname}
+                          width={32}
+                          height={32}
                           className="w-8 h-8 rounded-full border border-white/20"
                         />
                         <span className="text-white font-medium">{photo.nickname}</span>
@@ -206,14 +214,16 @@ export default function LandingPage() {
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-16">
             What Our Community Says
           </h2>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {testimonials.map((testimonial, index) => (
               <div key={index} className="card p-6">
                 <div className="flex items-center gap-4 mb-4">
-                  <img
+                  <Image
                     src={testimonial.image}
                     alt={testimonial.name}
+                    width={48}
+                    height={48}
                     className="w-12 h-12 rounded-full object-cover"
                   />
                   <div>

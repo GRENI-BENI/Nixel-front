@@ -23,17 +23,6 @@ export interface User {
   followedByCurrentUser: boolean;
 }
 
-export interface UserPhoto {
-  id: string;
-  url: string;
-  title: string;
-  description: string;
-  tags: string[];
-  nickname: string;
-  userProfileImage: string;
-  isLiked: boolean;
-  likesCount: number;
-}
 
 export interface Photo {
   id: string;
@@ -49,7 +38,20 @@ export interface Photo {
   likedByCurrentUser: boolean;
   createdAt: string;
 }
+export interface DonationPlatform {
+  id: number;
+  name: string;
+  icon: string;
+  baseUrl: string;
+}
 
+export interface UserDonation {
+  id: number;
+  platformId: number;
+  platformName: string;
+  platformIcon: string;
+  donationLink: string;
+}
 export interface Comment {
   id: string;
   content: string;
@@ -85,7 +87,7 @@ export const authApi = {
     return response.json();
   },
 
-    signup: async (data: { email: string; password: string; nickname: string }) => {
+  signup: async (data: { email: string; password: string; nickname: string }) => {
     const response = await fetch(`${API_BASE_URL}/iam/auth/signup`, {
       method: 'POST',
       headers: getHeaders(),
@@ -150,7 +152,7 @@ export const userApi = {
   // Request body: { about: string }
   // Response: User
   updateAbout: async (about: string) => {
-    const response = await fetch(`${API_BASE_URL}/user/me/about`, {
+    const response = await fetch(`${API_BASE_URL}/iam/user/me/about`, {
       method: 'PUT',
       headers: getHeaders(),
       body: JSON.stringify({ about }),
@@ -168,7 +170,7 @@ export const userApi = {
     const formData = new FormData();
     formData.append('image', imageFile);
 
-    const response = await fetch(`${API_BASE_URL}/user/me/profile-image`, {
+    const response = await fetch(`${API_BASE_URL}/photos/user/profile-image`, {
       method: 'POST',
       headers: {
         ...(localStorage.getItem('token') ? { Authorization: `Bearer ${localStorage.getItem('token')}` } : {})
@@ -177,6 +179,122 @@ export const userApi = {
     });
     return response.json();
   },
+
+  // POST /api/iam/user/:nickname/follow
+  // Response: { content: User[], pageable: {...}, totalElements: number, ... }
+  followUser: async (nickname: string) => {
+    const response = await fetch(`${API_BASE_URL}/iam/user/${nickname}/follow`, {
+      method: 'POST',
+      headers: getHeaders(),
+    });
+    if (!response.ok) {
+      throw new Error('Failed to follow user');
+    }
+    return response.json();
+  },
+
+  // DELETE /api/iam/user/:nickname/follow
+  // Response: { content: User[], pageable: {...}, totalElements: number, ... }
+  unfollowUser: async (nickname: string) => {
+    const response = await fetch(`${API_BASE_URL}/iam/user/${nickname}/follow`, {
+      method: 'DELETE',
+      headers: getHeaders(),
+    });
+    if (!response.ok) {
+      throw new Error('Failed to unfollow user');
+    }
+    return response.json();
+  },
+
+  // GET /api/iam/user/:nickname/followers
+  // Query params: page?: number, size?: number
+  // Response: { content: User[], pageable: {...}, totalElements: number, ... }
+  getFollowers: async (nickname: string, params?: { page?: number; size?: number }) => {
+    const queryParams = new URLSearchParams(params as any).toString();
+    const response = await fetch(`${API_BASE_URL}/iam/user/${nickname}/followers?${queryParams}`, {
+      headers: getHeaders(),
+    });
+    if (!response.ok) {
+      throw new Error('Failed to fetch followers');
+    }
+    return response.json();
+  },
+
+  // GET /api/iam/user/:nickname/following
+  // Query params: page?: number, size?: number
+  // Response: { content: User[], pageable: {...}, totalElements: number, ... }
+  getFollowing: async (nickname: string, params?: { page?: number; size?: number }) => {
+    const queryParams = new URLSearchParams(params as any).toString();
+    const response = await fetch(`${API_BASE_URL}/iam/user/${nickname}/following?${queryParams}`, {
+      headers: getHeaders(),
+    });
+    if (!response.ok) {
+      throw new Error('Failed to fetch following users');
+    }
+    return response.json();
+  },
+
+  // GET /api/iam/platforms
+  // Response: DonationPlatform[]
+  getDonationPlatforms: async (): Promise<DonationPlatform[]> => {
+    const response = await fetch(`${API_BASE_URL}/iam/platforms`, {
+      headers: getHeaders()
+    });
+    if (!response.ok) {
+      throw new Error('Failed to fetch donation platforms');
+    }
+    return response.json();
+  },
+
+  // GET /api/iam/user/me/donations
+  // Response: UserDonation[]
+  getUserDonations: async (): Promise<UserDonation[]> => {
+    const response = await fetch(`${API_BASE_URL}/iam/user/me/donations`, {
+      headers: getHeaders()
+    });
+    if (!response.ok) {
+      throw new Error('Failed to fetch user donations');
+    }
+    return response.json();
+  },
+
+  // POST /api/iam/user/me/donations
+  // Request body: { platformId: number, donationLink: string }
+  // Response: UserDonation[]
+  addDonationLink: async (platformId: number, donationLink: string) => {
+    const response = await fetch(`${API_BASE_URL}/iam/user/me/donations`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify({ platformId, donationLink }),
+    });
+    if (!response.ok) {
+      throw new Error('Failed to add donation link');
+    }
+    return response.json();
+  },
+
+  // DELETE /api/iam/user/me/donations/:id
+  // Response: void
+  deleteDonationLink: async (donationId: number) => {
+    const response = await fetch(`${API_BASE_URL}/iam/user/me/donations/${donationId}`, {
+      method: 'DELETE',
+      headers: getHeaders(),
+    });
+    if (!response.ok) {
+      throw new Error('Failed to delete donation link');
+    }
+    return response.json();
+  },
+
+  getUserDonationsById: async (userId: string) => {
+    const response = await fetch(`${API_BASE_URL}/iam/user/${userId}/donations-by-id`, {
+      headers: getHeaders()
+    });
+    if (!response.ok) {
+      throw new Error('Failed to fetch user donations');
+    }
+    return response.json();
+  }
 };
 
 // Photos API
@@ -235,7 +353,6 @@ export const photoApi = {
     description: string;
     tags: string[];
   }) => {
-    console.log(JSON.stringify(data.tags))
     const formData = new FormData();
     formData.append('image', data.image);
     formData.append('title', data.title);
@@ -285,7 +402,7 @@ export const photoApi = {
       method: 'POST',
       headers: getHeaders(),
     });
-    
+
     if (!response.ok) {
       const text = await response.text();
       throw new Error(`Failed to like photo: ${response.status}${text ? ` - ${text}` : ''}`);
@@ -306,7 +423,7 @@ export const photoApi = {
       method: 'DELETE',
       headers: getHeaders(),
     });
-    
+
     if (!response.ok) {
       const text = await response.text();
       throw new Error(`Failed to unlike photo: ${response.status}${text ? ` - ${text}` : ''}`);
@@ -336,10 +453,10 @@ export const commentApi = {
   getComments: async (photoId: string, params?: { page?: number; size?: number }) => {
     const queryParams = new URLSearchParams(params as any).toString();
     const response = await fetch(
-      `${API_BASE_URL}/comments/${photoId}?${queryParams}`,
-      {
-        headers: getHeaders()
-      }
+        `${API_BASE_URL}/comments/${photoId}?${queryParams}`,
+        {
+          headers: getHeaders()
+        }
     );
     return response.json();
   },

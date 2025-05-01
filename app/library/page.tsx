@@ -2,16 +2,17 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { PhotoIcon, HeartIcon, ChatBubbleLeftIcon, PencilIcon, TrashIcon, PlusIcon } from '@heroicons/react/24/outline';
-import { userApi, photoApi, commentApi, type User, type UserPhoto } from '@/lib/api';
+import { userApi, photoApi, commentApi, type User, type Photo } from '@/lib/api';
 
 const IMAGES_BASE_URL = process.env.NEXT_PUBLIC_IMAGES_BASE_URL;
 
 interface Stats {
   totalLikes: number;
   totalComments: number;
-  mostLikedPhoto: UserPhoto | null;
-  photos: UserPhoto[];
+  mostLikedPhoto: Photo | null;
+  photos: Photo[];
 }
 
 export default function LibraryPage() {
@@ -76,7 +77,7 @@ export default function LibraryPage() {
     fetchUserData();
   }, []);
 
-  const handleEditPhoto = (photo: UserPhoto) => {
+  const handleEditPhoto = (photo: Photo) => {
     setEditingPhoto({
       id: photo.id,
       title: photo.title || '',
@@ -185,9 +186,11 @@ export default function LibraryPage() {
             <div className="flex flex-col md:flex-row gap-6">
               <div className="w-full md:w-96">
                 <Link href={`/photos/${stats.mostLikedPhoto.id}`} className="block">
-                  <img
+                  <Image
                     src={IMAGES_BASE_URL + stats.mostLikedPhoto.url}
                     alt={stats.mostLikedPhoto.title || 'Most liked photo'}
+                    width={800}
+                    height={256}
                     className="w-full h-64 object-cover rounded-lg"
                   />
                 </Link>
@@ -235,9 +238,11 @@ export default function LibraryPage() {
                   href={`/photos/${photo.id}`}
                   className="block relative aspect-square overflow-hidden rounded-lg"
                 >
-                  <img
+                  <Image
                     src={IMAGES_BASE_URL + photo.url}
                     alt={photo.title || 'User photo'}
+                    width={400}
+                    height={400}
                     className="w-full h-full object-cover"
                   />
                   <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
